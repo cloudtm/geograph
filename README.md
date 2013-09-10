@@ -1,4 +1,4 @@
-final-prototype
+GeoGraph
 ===============
 
 GeoGraph repositories forked and bundled upon the final delivery of the Cloud-TM project.
