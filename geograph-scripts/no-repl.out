@@ -1,0 +1,52 @@
+KILLING LOGSERVICE, PID 3126 28333
+----THE FOLLOWING JAVA SERVICES ARE STILL ALIVE---
+3150 Main
+14951 GossipRouter
+14950 GossipRouter
+11934 GossipRouter
+11467 Jps
+3126 -- process information unavailable
+--RESTARTING LOG SERVICE-
+about to clean
+clean done!
+JAVAPID 10729
+12391
+GossipRouter is starting. CTRL-C to exit JVM
+
+GossipRouter is starting. CTRL-C to exit JVM
+IP 172.31.0.142
+java.net.BindException: Address already in use
+java.net.BindException: Address already in use
+java.net.BindException: Address already in use
+
+IP 172.31.0.143
+
+IP 172.31.0.144
+
+IP 172.31.0.145
+
+IP 172.31.0.52
+
+IP 172.31.0.53
+
+IP 172.31.0.54
+
+IP 172.31.0.55
+
+IP 172.31.0.56
+
+Stopped java on 172.31.0.142
+Stopped java on 172.31.0.143
+Stopped java on 172.31.0.144
+Stopped java on 172.31.0.145
+Stopped java on 172.31.0.52
+Stopped java on 172.31.0.53
+Stopped java on 172.31.0.54
+Stopped java on 172.31.0.55
+Stopped java on 172.31.0.56
+(Re)starting 172.31.0.142 (only farm)
+(Re)starting 172.31.0.143 (only farm)
+(Re)starting 172.31.0.144 (only farm)
+(Re)starting 172.31.0.145 (only farm)
+(Re)starting 172.31.0.52 (geograph and wpm)
+(Re)starting 172.31.0.53 (geograph and wpm)

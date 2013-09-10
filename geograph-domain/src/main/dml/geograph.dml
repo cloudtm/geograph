@@ -1,0 +1,241 @@
+package it.algo.geograph.domain;
+
+
+// VALUE TYPES
+
+valueType java.math.BigDecimal as Decimal {
+    externalizeWith {
+        String toString();
+    }
+}
+
+valueType java.util.Date as Date {
+    externalizeWith {
+        String toString();
+    }
+}
+
+// DOMAIN OBJECTS
+
+class Agent {
+  String status;
+  String user;
+}
+
+class Trackable extends Agent {}
+
+class Track {
+  Date timestamp;
+}
+
+class KdNode {
+  Integer split_dim;
+  boolean enabled;
+  Decimal dist2sample;
+}
+
+class Location {
+  String type;
+  String body;
+  Decimal latitude;
+  Decimal longitude;
+}
+
+class Post {
+  Integer likes;
+  String text;
+  //String user;
+}
+
+class Landmark {
+  Integer x;
+  Integer y;
+  Decimal latitude;
+  Decimal longitude;
+  String type;
+  String body;
+  String cell;
+  String lkey;
+  String lval;
+}
+
+class LandmarkStats {
+  Integer posts;
+  Integer venues;
+  Integer trackables;
+  Integer postComments;
+  Integer postLikes;
+  Integer venueComments;
+  Integer venueLikes;
+  Integer agentsInVenues;
+}
+
+class PostLandmark extends Landmark { }
+class VenueLandmark extends Landmark { }
+class TrackableLandmark extends Landmark { }
+
+class Venue {
+  String name;
+  Integer likes;
+}
+
+class Comment {
+  String comment;
+}
+
+class Root { // This is the root domain object
+    boolean loaded;         // auxiliary slot for the bootstrap sequence
+    Integer numAgentIds;    // for the generation of Agent ids
+    Integer numPropertiesIds; // FIXME is this the right way to do it?
+}
+
+
+// RELATIONS
+
+relation DomainRootHasRoot {
+    .pt.ist.fenixframework.DomainRoot playsRole;
+    Root playsRole app;
+}
+
+
+relation RootHasAgents {
+    Root playsRole;  //For unidirectional write no role name
+    Agent playsRole agents {
+        multiplicity *;
+        indexed by user;
+    }
+}
+
+relation AgentHasPosts { //add posts must use closed simulation to avoid conflicts
+    Agent playsRole agent;
+    Post playsRole posts { multiplicity *; }
+}
+
+relation AgentVisitedManyVenues {
+  Agent playsRole visitorAgents { multiplicity *; }
+  Venue playsRole visitedVenues { multiplicity *; }
+}
+
+relation AgentOwnsManyVenues {
+  Agent playsRole ownerAgent;
+  Venue playsRole ownedVenues { multiplicity *; }
+}
+
+relation AgentIsCurrentlyAtVenue {
+  Agent playsRole agents { multiplicity *; }
+  Venue playsRole currentVenue;
+}
+
+relation VenueHasManyComments {
+  Venue playsRole venue;
+  Comment playsRole comments { multiplicity *; }
+}
+
+relation VenueHasALocation {
+  Venue playsRole venue;
+  Location playsRole location;
+}
+
+relation PostHasComments {
+  Post playsRole post;
+  Comment playsRole comments { multiplicity *; }
+}
+
+relation PostHasLocation {
+    Post playsRole post;
+    Location playsRole location;
+}
+
+relation TrackableHasLocation {
+    Trackable playsRole trackable;
+    Location playsRole location;
+}
+
+relation LandmarkHasStats {
+    Landmark playsRole landmark;
+    LandmarkStats playsRole stats;
+}
+
+relation RootHasPostLandmarks {
+  Root playsRole;
+  Landmark playsRole postLandmarks {
+    multiplicity *;
+    indexed by cell;
+  }
+}
+
+relation RootHasTrackableLandmarks {
+  Root playsRole;
+  Landmark playsRole trackableLandmarks {
+    multiplicity *;
+    indexed by cell;
+  }
+}
+
+relation RootHasVenueLandmarks {
+  Root playsRole;
+  Landmark playsRole venueLandmarks {
+    multiplicity *;
+    indexed by cell;
+  }
+}
+
+relation PostLandmarkHasLocations {
+    Landmark playsRole postLandmark;
+    Location playsRole ;
+}
+
+relation VenueLandmarkHasLocations {
+    Landmark playsRole venueLandmark;
+    Location playsRole ;
+}
+
+relation TrackableLandmarkHasLocations {
+    Landmark playsRole trackableLandmark;
+    Location playsRole trackableLocations { multiplicity *; }
+}
+
+relation LandmarkHasLocations {
+  Landmark playsRole landmark;
+  Location playsRole ;  //locations { multiplicity *; }
+}
+
+relation LandmarkHasKdRoot {
+  Landmark playsRole landmark;
+  KdNode playsRole kdRoot;
+}
+
+relation KdNodeHasLeft {
+  KdNode playsRole ;
+  KdNode playsRole left;
+}
+
+relation KdNodeHasRight {
+  KdNode playsRole ;
+  KdNode playsRole right;
+}
+
+relation KdNodeHasLocation {
+  KdNode playsRole kdNode;
+  Location playsRole sample;
+}
+
+relation TrackableHasTracks {
+  Trackable playsRole;
+  Track playsRole tracks { multiplicity *; }
+}
+
+relation TrackableHasCurrentTrack {
+  Trackable playsRole;
+  Track playsRole currentTrack;
+}
+
+relation TrackableHasCurrentPosition {
+  Trackable playsRole;
+  Location playsRole currentPosition;
+}
+
+relation TrackHasLocations {
+  Track playsRole track;
+  Location playsRole locations { multiplicity *; }
+}

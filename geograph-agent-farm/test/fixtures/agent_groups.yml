@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  simulator: MyString
+  sleep: 1
+  threads: 1
+  static_profile_id: 1
+
+two:
+  simulator: MyString
+  sleep: 1
+  threads: 1
+  static_profile_id: 1

@@ -1,0 +1,35 @@
+#!/bin/bash
+BENCH_SNAPSHOT=`cat ./automate/benchmark_snapshot`
+#DO=echo
+DO=
+
+#for i in `seq 1 3`; do
+#    $DO ./spawn-single-vm.sh $BENCH_SNAPSHOT farm-$i xxlarge
+#done
+
+#for i in `seq 1 10`; do
+#    $DO ./spawn/spawn-single-vm.sh $BENCH_SNAPSHOT geo-$i multivm
+#done
+#$DO ./spawn/wait-for-spawning.sh
+for protocol in pr 2pc; do
+    $DO ./automate/send-configurations.sh ./automate/configs/002-$protocol
+    for workload in 10r90u 50r50u 90r10u; do
+        case $workload in
+        10r90u) $DO ./curbench/curbench-define.sh SWITCH-PROTOCOL-POPULATION SWITCH-PROTOCOL-1090 NOOP-TAIL ;;
+        50r50u) $DO ./curbench/curbench-define.sh SWITCH-PROTOCOL-POPULATION SWITCH-PROTOCOL-5050 NOOP-TAIL ;;
+        90r10u) $DO ./curbench/curbench-define.sh SWITCH-PROTOCOL-POPULATION SWITCH-PROTOCOL-9010 NOOP-TAIL ;;
+        esac
+        $DO ./curbench/curbench-start.sh repl-prot-switch-bis.$protocol.$workload.5b-8f
+    done
+done
+
+#. ~/.openrc.sh
+#for i in `seq 1 10`; do
+#    $DO nova delete geo-$i
+#    $DO sleep 10s 
+#done
+
+#for i in 1 2 3; do
+#    $DO nova delete farm-$i
+#    $DO sleep 10s 
+#done

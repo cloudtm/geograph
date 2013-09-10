@@ -1,0 +1,5 @@
+:landmark_grid:
+  :cell_size: 50000   # meters
+
+:nearest_neighbours_search:
+  :radius: 50000      # meters

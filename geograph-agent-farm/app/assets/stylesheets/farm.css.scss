@@ -1,0 +1,182 @@
+// Place all the styles related to the farm controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+//vittorio START
+
+.btn-list {
+  margin-top: 10px;
+}
+
+.btn-group {
+  float: right;
+}
+
+.btn-group-profile {
+  padding-left: 40px;
+}
+
+h4, h2 {
+  padding-left: 0px;
+  color: #999999;
+}
+
+.schedule-header{
+  margin-top: 25px;
+  margin-bottom: 0px;
+}
+.new-benchmark {
+  margin-top: 5px;
+}
+.iterations{
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+.spaced-label{
+  margin-top: 40px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.benchmark-console {
+  padding: 30px 30px 30px 30px;
+
+  .current-iteration {
+    font-size: 16px;
+    line-height: 25px;
+    text-align: center;
+  }
+}
+
+.sandbox {
+  padding: 0px 15px 0px 15px;
+  border-radius: 12px;
+  border-width: 1px;
+  border-color: #aaaaaa;
+  border-style: double;
+
+  .btn-low {
+    margin-top: 5px;
+  }
+  h3 {
+    padding-left: 0px;
+    margin: 20px 20px 20px 0px;
+  }
+
+  h5 {
+    padding-left: 0px;
+    line-height: 32px;
+  }
+}
+
+.new-profile-btn {
+  margin-top: -10px;
+}
+
+.sign-out {
+  float: right;
+}
+
+.bigmenu {
+  width: 230px;
+}
+
+.edge_processor_type {
+  margin-left: 20px !important;
+  margin-right: 20px !important;
+}
+
+.dropdown-save {
+  float: right;
+  margin-right: 20px;
+  margin-bottom: 15px;
+  margin-top: 15px !important;
+}
+
+.map {
+  height: 1000px;
+  border: none;
+}
+
+.divider-hack {
+  width: 100%;
+}
+
+.url-box {
+  margin-left: 20px;
+  margin-right: 20px;
+  input {
+    width: 175px;
+  }
+}
+
+//vittorio END
+
+.add-static-profile-button {
+  margin-left: 50px;
+}
+
+.static-profile-form-alert {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.accordion-toggle {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.static-profile-action {
+  float: right;
+  margin-left: 5px;
+}
+
+.dynamic-profile-action {
+  cursor: pointer;
+}
+
+#add-group-button {
+  margin-bottom: 10px;
+}
+
+.delete-agent-group-button {
+  float: right;
+}
+
+.modal h3 {
+  margin: 20px;
+}
+
+.benchmark-buttons {
+  margin: 20px 0 20px 0;
+}
+
+#global-progress-bar {
+  height: 40px;
+  margin-top: 5px;
+  .bar {
+    font-size: 17px;
+  }
+
+}
+
+.profile-cell {
+  float: left;
+}
+
+.little-left-margin {
+  margin-left: 10px;  
+}
+
+.right-position {
+  float: right;
+}
+
+.dynamic-progress-container {
+  width: 300px;
+}
+
+.profile-box-container {
+  height: 40px;
+}

@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  min_latitude: 1.5
+  min_longitude: 1.5
+  max_latitude: 1.5
+  max_longitude: 1.5
+
+two:
+  name: MyString
+  min_latitude: 1.5
+  min_longitude: 1.5
+  max_latitude: 1.5
+  max_longitude: 1.5

@@ -1,0 +1,35 @@
+#!/bin/bash
+BENCH_SNAPSHOT=`cat ./automate/benchmark_snapshot`
+DO=echo
+
+for i in `seq 1 3`; do
+    $DO ./spawn-single-vm.sh $BENCH_SNAPSHOT farm-$i xxlarge
+done
+
+for i in `seq 1 40`; do
+    $DO ./spawn/spawn-single-vm.sh $BENCH_SNAPSHOT geo-$i multivm
+done
+$DO ./spawn/wait-for-spawning.sh
+for repl_degree in n n_2 3; do
+    $DO ./automate/send-configurations.sh ./automate/configs/003-repldeg_$repl_degree
+    for workload in wl_2pc wl_to wl_pb wl_seq; do
+        case $workload in
+        wl_2pc) $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS READ_ONLY NOOP-TAIL ;;
+        wl_to) $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS NOOP-TAIL ;;
+        wl_pb) $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS READ_ONLY NOOP-TAIL ;;
+        wl_seq) $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS READ_ONLY NOOP-TAIL ;;
+        esac
+        $DO ./curbench/curbench-start.sh replication-protocol-switching.$protocol.$workload.40b-3f
+    done
+done
+
+. ~/.openrc.sh
+for i in `seq 1 40`; do
+    $DO nova delete geo-$i
+    $DO sleep 10s 
+done
+
+for i in 1 2 3; do
+    $DO nova delete farm-$i
+    $DO sleep 10s 
+done

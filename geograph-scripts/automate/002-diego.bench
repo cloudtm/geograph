@@ -1,0 +1,63 @@
+#!/bin/bash
+BENCH_SNAPSHOT=`cat ./automate/benchmark_snapshot`
+DO=
+
+
+function change-replication-degree(){
+ sed -i "s/numOwners=\"2\"/numOwners=\"${2}\"/g" automate/configs/002-${1}/infinispan-udp-conf-geograph.xml
+}
+
+function update-config(){
+ cd automate/configs
+  ./update-configs-from-templates.sh
+  cd ../..
+}
+
+#for i in `seq 1 3`; do
+#    $DO ./spawn-single-vm.sh $BENCH_SNAPSHOT farm-$i xxlarge
+#done
+
+#for i in `seq 1 5`; do
+#    $DO ./spawn/spawn-rr-single-vm.sh $BENCH_SNAPSHOT geo-$i geo-big
+#done
+
+#$DO ./spawn/wait-for-spawning.sh
+#$DO ./update-fenix.sh
+#$DO ./update-infinispan.sh
+#$DO ./git-pull-all.sh
+$DO ./d_update-wpm.sh
+
+nodes=5
+#for protocol in 2pc to pr; do
+for protocol in pr; do
+    #case ${protocol} in
+    #2pc) $DO change-replication-degree 2pc ${nodes} ;;
+    #to) $DO change-replication-degree to ${nodes} ;;
+    #pb) $DO change-replication-degree pr ${node} ;;
+    #esac
+    $DO update-config    
+    $DO change-replication-degree ${protocol} ${nodes}
+    $DO ./automate/send-configurations-no-create.sh ./automate/configs/002-$protocol
+    #for workload in wl_2pc wl_to wl_pb wl_seq; do
+       # case $workload in
+       # wl_2pc) $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS READ_ONLY NOOP-TAIL ;;
+       # wl_to) $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS NOOP-TAIL ;;
+       # wl_pb) $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS READ_ONLY NOOP-TAIL ;;
+       # wl_seq) $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS READ_ONLY NOOP-TAIL ;;
+       # esac
+        $DO ./curbench/curbench-define.sh SWITCH-PROTOCOL-POSTRACKER  NOOP-TAIL
+        $DO ./curbench/curbench-start.sh replication-protocol-switching.$protocol.SHORTSW.5b_8t-8f
+    #done
+    sleep 20s
+done
+
+. ~/.openrc.sh
+#for i in `seq 1 10`; do
+#    $DO nova delete geo-$i
+#    $DO sleep 10s 
+#done
+
+#for i in 1 2 3; do
+#    $DO nova delete farm-$i
+#    $DO sleep 10s 
+#done

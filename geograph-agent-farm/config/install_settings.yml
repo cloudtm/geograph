@@ -1,0 +1,26 @@
+# THIS IS AN AUTOMATICALLY GENERATED
+# DO NOT EDIT MANUALLY 
+
+---
+#:ws_adapter: Madmass::Comm::SockySender
+:ws_adapter: Madmass::Comm::JmsSender
+:host: madmass-node
+:port: "9090"
+:secure: "false"
+:secret: my_secret_key
+:db: true
+:ar: true
+:devise: true
+:torquebox: true
+:commands_queue: /queue/commands
+:perceptions_topic: /topic/perceptions
+:receive_timeout: 5000
+:naming_host: localhost
+:naming_port: 1099
+#:ws_client: :socky
+:ws_client: :stilts
+:stomplet_host: localhost
+:stomplet_port: 8675
+:stomplet_topic: /madmass/domain
+# cluster nodes
+:remote_messaging_port: 5445

@@ -1,0 +1,10 @@
+:landmark_grid:
+  :cell_size: 100000   # meters
+
+:nearest_neighbours_search:
+  :radius: 100      # meters
+
+:batch_add_posts:
+  :count: 10
+  :radius: 100       # meters
+

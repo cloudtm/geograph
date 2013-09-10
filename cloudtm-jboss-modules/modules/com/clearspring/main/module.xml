@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module xmlns="urn:jboss:module:1.1" name="com.clearspring">
+    <resources>
+    <resource-root path="stream-2.2.0-SNAPSHOT.jar"/>
+    <!--  <resource-root path="infinispan-core-5.1.2.FINAL.jar"/>-->
+    <!-- Insert resources here -->
+    </resources>
+</module>

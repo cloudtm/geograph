@@ -1,0 +1,108 @@
+package it.algo.geograph.agentfarm.domain;
+
+// VALUE TYPES
+
+
+valueType java.math.BigDecimal as Decimal {
+    externalizeWith {
+        String toString();
+    }
+}
+
+valueType java.util.Date as Date {
+    externalizeWith {
+        String toString();
+    }
+}
+
+// DOMAIN OBJECTS
+
+class Root {
+    boolean loaded;             // auxiliary slot for the bootstrap sequence
+    Integer numAgentGroupIds;   // for the generation of agent group ids
+    Integer numRouteIds;        // for the generation of route ids
+}
+
+
+
+class AgentGroup {
+  String name;
+  Integer delay;
+  String agents_type;
+  String status;
+  String track_filter_type;
+  String track_filter_value;
+  //ADDME String agent_type;
+  Date last_execution; //remove me
+}
+
+class Agent {
+  String status;
+  String type;
+  Integer execution_time; //in ms
+  Decimal initial_latitude;
+  Decimal initial_longitude;
+}
+
+class BloggerAgent extends Agent {}
+class ReaderAgent extends Agent {}
+class MovableAgent extends Agent {}
+class TesterAgent extends Agent {}
+
+class PositionTrackerAgent extends Agent {}
+class PathTrackerAgent extends Agent {}
+class MicroGeoBloggerAgent extends Agent {}
+class GeoBlogReaderAgent extends Agent {}
+class VenueOwnerAgent extends Agent {}
+class FoursquareUserAgent extends Agent {}
+class VenueSeekerAgent extends Agent {}
+class ReviewerAgent extends Agent {}
+class NoopAgent extends Agent {}
+class Blogger1kAgent extends Agent { Integer numOfPosts; Boolean finished; }
+class Blogger10kAgent extends Agent { Integer numOfPosts; Boolean finished; }
+class ProbReadPost90UpdatePos10Agent extends Agent {}
+class ProbReadPost50UpdatePos50Agent extends Agent {}
+class ProbReadPost10UpdatePos90Agent extends Agent {}
+class ProbReadPostUpdatePosConfAgent extends Agent {}
+
+class Route {
+  String name;
+}
+
+class Position {
+  Decimal latitude;
+  Decimal longitude;
+  Integer progressive;
+}
+
+
+// RELATIONS
+relation DomainRootHasRoot {
+    .pt.ist.fenixframework.DomainRoot playsRole;
+    Root playsRole app;
+}
+
+
+
+relation RootHasAgentGroups {
+    Root playsRole root;
+    AgentGroup playsRole agentGroups { multiplicity *; }
+}
+
+
+relation RootHasRoutes {
+    Root playsRole root;
+    Route playsRole routes { multiplicity *; }
+}
+
+
+relation AgentGroupHasAgents {
+    AgentGroup playsRole agentGroup;
+    Agent playsRole agents { multiplicity 0..*; }
+}
+
+
+relation RouteHasPositions {
+    Route playsRole route;
+    Position playsRole positions { multiplicity 0..*; }
+}

@@ -1,0 +1,15 @@
+:landmark_grid:
+  :cell_size: 10000   # meters
+
+:nearest_neighbours_search:
+  :radius: 100      # meters
+
+:batch_add_posts:
+  :count: 10
+  :radius: 100       # meters
+
+:prob_read_update_agent:
+    :read_ratio: 0.9
+
+:l2_cache:
+  :enabled: true

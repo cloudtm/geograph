@@ -1,0 +1,25 @@
+== Geograph Agent Farm
+
+This project is part of the Specific Targeted Research Project (STReP) Cloud-TM[http://www.cloudtm.eu] and is partially funded by the
+European Commission under the Seventh Framework Programme for Research and Technological Development (FP7 - 2007-2013) with contract no. 257784.
+
+This is a workload generator for Geograph. Please install Geograph[http://github.com/algorithmica/geograph] before installing the workload generator.
+
+== Getting started
+
+This project requires Geograph[https://github.com/algorithmica/geograph]. If you haven't, please install it first. In order to run the application follow these steps:
+1. Clone the project from the git repository:
+    git clone git://github.com/algorithmica/geograph-agent-farm.git
+2. Install the needed gem libraries:
+   open a shell,
+   cd to the project folder
+   and run
+    jruby -S bundle install
+   <b>Note</b>: if you are on a linux machine you must add two gems to the Gemfile <em>before executing the bundle install</em>
+   open the Gemfile (in the root of the application) and add
+    gem 'execjs'
+    gem 'therubyrhino'
+
+3.  Install the domain as described here[https://github.com/algorithmica/geograph-agent-farm-domain]
+4. Setup the database (make sure sqlite3 is installed):
+    jruby -S rake db:setup

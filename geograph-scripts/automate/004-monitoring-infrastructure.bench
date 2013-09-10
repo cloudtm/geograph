@@ -1,0 +1,30 @@
+#!/bin/bash
+BENCH_SNAPSHOT=`cat ./automate/benchmark_snapshot`
+DO=echo
+
+for i in `seq 1 3`; do
+    $DO ./spawn-single-vm.sh $BENCH_SNAPSHOT farm-$i xxlarge
+done
+
+for i in `seq 1 10`; do
+    $DO ./spawn/spawn-single-vm.sh $BENCH_SNAPSHOT geo-$i multivm
+done
+$DO ./spawn/wait-for-spawning.sh
+for sampling_rate in 1 30 60; do
+    for extended_stats in 0 1; do
+        $DO ./automate/send-configurations.sh ./automate/configs/004-sampling_$sampling_rate-extstats_$extended_stats
+        $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS READ_ONLY NOOP-TAIL
+        $DO ./curbench/curbench-start.sh monitoring-infrastructure.sr$sampling_rate.ext$extended_stats.10b-3f
+    done
+done
+
+. ~/.openrc.sh
+for i in `seq 1 10`; do
+    $DO nova delete geo-$i
+    $DO sleep 10s 
+done
+
+for i in 1 2 3; do
+    $DO nova delete farm-$i
+    $DO sleep 10s 
+done

@@ -1,0 +1,49 @@
+queues:
+  /queue/agents:
+    durable: false
+
+#messaging:
+#  /topic/perceptions:
+#    Madmass::PerceptionsProcessor:
+#  /queue/agents:
+#    Madmass::AgentRunner:
+
+
+#jobs:
+#  agent.group.runner:
+#    job:  AgentGroupRunner
+#    cron: '*/1 * * * * ?'
+#    description: Run Agent Groups
+#    singleton: true
+
+services:
+  BenchmarkService:
+    config:
+      sleep: 5
+
+#services:
+#  PerceptionsService:
+#    config:
+#      topic: /topic/perceptions
+#      host: localhost
+#      port: 5445
+
+tasks:
+  Backgroundable:
+    concurrency: 1
+
+
+pooling:
+  messaging:
+    type: shared
+    lazy: false
+  web:
+    type: shared
+    lazy: false
+  jobs:
+    type: shared
+    lazy: false
+
+ruby:
+  version: 1.9
+

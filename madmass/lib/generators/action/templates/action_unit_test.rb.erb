@@ -1,0 +1,24 @@
+require File.join('test', 'test_helper')
+require File.dirname(__FILE__)+'/../../lib/actions/<%=file_name%>_action.rb'
+
+
+class <%=file_name.camelize%>ActionTest < ActiveSupport::TestCase
+
+
+  test "a <%=file_name.humanize%>" do
+
+    agent = Madmass::Agent::ProxyAgent.new
+
+    assert_not_nil agent
+
+    status = agent.execute(:cmd => 'actions::<%=file_name%>')
+
+    perception = Madmass.current_perception
+
+    assert perception
+
+    #more testing code here
+
+  end
+
+end

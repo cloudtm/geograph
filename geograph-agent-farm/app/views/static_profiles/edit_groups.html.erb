@@ -1,0 +1,7 @@
+<div class="group-container">
+	<button id="add-group-button" class="btn btn-primary" type="button" data-profile="<%= @static_profile.id %>">add group</button>
+	
+	<% @static_profile.agent_groups.each do |agent_group| %>
+		<%= render :partial => 'static_profiles/agent_group_form', :locals => {:agent_group => agent_group} %>
+	<% end %>
+</div>

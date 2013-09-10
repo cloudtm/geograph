@@ -1,0 +1,56 @@
+#!/bin/bash
+BENCH_SNAPSHOT=`cat ./automate/benchmark_snapshot`
+#DO=echo
+DO=
+
+#./spawn/clean-presence-signals-from-vm.sh
+
+#for i in 1 2 3 4; do
+#    $DO ./spawn/spawn-rr-single-vm.sh $BENCH_SNAPSHOT farm-$i xxlarge
+#    $DO sleep 30s
+#done
+
+from_machines=33
+#for machines in 2 4 8 16 32 64; do
+for machines in 32; do
+    ./restart-gateway-services.sh
+#    for i in `seq $from_machines $machines`; do
+#        $DO ./spawn/spawn-rr-single-vm.sh $BENCH_SNAPSHOT geo-$i geo-eph #multivm
+#        $DO sleep 30s
+#    done
+    $DO ./spawn/wait-for-spawning.sh
+    $DO ./update-fenix.sh
+    $DO ./update-infinispan.sh
+    $DO ./git-pull-all.sh
+    $DO ./automate/send-configurations.sh ./automate/configs/001-2pc-gmu-repl3-${machines}b
+    NOOP=NOOP-TAIL
+    if [ $machines -gt 60 ]; then
+        NOOP=NOOP-TAIL-10min
+    fi
+    for workload in wl_read wl_mixed wl_write; do #wl_write wl_mixed; do
+        case $workload in
+        wl_read)
+            $DO ./curbench/curbench-define.sh SCALABILITY-POPULATION-${machines}B SCALABILITY-90R-10U-2TT-${machines}B SCALABILITY-90R-10U-0TT-${machines}B $NOOP
+            ;;
+        wl_write)
+            $DO ./curbench/curbench-define.sh SCALABILITY-POPULATION-${machines}B SCALABILITY-10R-90U-2TT-${machines}B SCALABILITY-10R-90U-0TT-${machines}B $NOOP
+            ;;
+        wl_mixed)
+            $DO ./curbench/curbench-define.sh SCALABILITY-POPULATION-${machines}B SCALABILITY-50R-50U-2TT-${machines}B SCALABILITY-50R-50U-0TT-${machines}B $NOOP
+            ;;
+        esac
+        $DO ./curbench/curbench-start.sh scalability.$workload.${machines}b-3f
+    done
+    from_machines=$((machines + 1))
+done
+
+. spawn/alg.sh
+for i in `seq 1 100`; do
+    $DO nova delete geo-$i
+    $DO sleep 10s
+done
+
+#for i in 1 2; do
+#    $DO nova delete farm-$i
+#    $DO sleep 10s
+#done

@@ -1,0 +1,109 @@
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <div class="row-fluid">
+        <a class="brand" href="#">Geograph Farm</a>
+
+        <div class="nav-collapse collapse navbar-responsive-collapse">
+          <ul class="nav span8">
+            <li><%= link_to "editor", console_path %></li>
+            <li><%= link_to "benchmark", benchmark_path %></li>
+            <li><%= link_to "landmark-stats", landmark_stats_path %></li>
+            <li><%= link_to "experiment-stats", stats_path %></li>
+            <li><%= link_to "inspect", agents_path %></li>
+            <li><%= link_to "map", map_path %></li>
+            <li class="dropdown closed bigmenu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">settings <b class="caret"></b></a>
+
+              <ul class="dropdown-menu row-fluid">
+
+                <li class="divider"></li>
+                <li class="nav-header">EDGE PROCESSOR</li>
+                <%= select_tag "current_profile_id", options_for_select(['none', 'job', 'action']), :prompt => "processor type", :class => 'span10 edge_processor_type'
+                %>
+
+                <li>
+                  <label class="edge_processor_type" for="name">
+                    distance <span id="distance-selected-new"><%= 0 %></span> (mt)
+                  </label>
+                </li>
+                <%= hidden_field_tag "process[distance]" %>
+
+                <li>
+                  <div class="distance-slider slider edge_processor_type" rel="new"></div>
+                </li>
+
+                <li class="span12">
+                  <%= button_tag "save", :class => 'btn btn-primary btn-mini dropdown-save', :onclick => "$.ajax({
+                                                                                         url: '#{set_properties_path}',
+                                                                                         type: 'PUT',
+                                                                                         data: {'distance': $('#process_distance').val(), 'id': $('#current_profile_id').val() },
+                                                                                         success: function(details){
+                                                                                         }
+                                                                                       });" %>
+                </li>
+
+                <li class="divider divider-hack"></li>
+                <li class="nav-header">MAP URL</li>
+                <li>
+                  <form class="navbar-form pull-left url-box">
+                    <input id="map-url" type="text" placeholder="http://example.com:8080" value="<%= current_user ? current_user.setting.map_url : nil %>"/>
+                  </form>
+                </li>
+
+                <li class="span12">
+                  <%= button_tag "save", :class => 'btn btn-primary btn-mini dropdown-save',
+                                 :onclick => "$.ajax({
+                                                url: '#{map_url_path}',
+                                                type: 'PUT',
+                                                data: {'map_url': $('#map-url').val()}});" %>
+                </li>
+                <li class="divider divider-hack"></li>
+                <li class="nav-header">EXPERIMENT STATS URL</li>
+                <li>
+                  <form class="navbar-form pull-left url-box">
+                    <input id="stats-url" type="text" placeholder="http://example.com:8080" value="<%= current_user ? current_user.setting.stats_url : nil %>">
+                  </form>
+                </li>
+                <li class="span12">
+                  <%= button_tag "save", :class => 'btn btn-primary btn-mini dropdown-save', :onclick => "$.ajax({
+                                                                  url: '#{stats_url_path}',
+                                                                  type: 'PUT',
+                                                                  data: {'stats_url': $('#stats-url').val()}});" %>
+                </li>
+
+                <li class="divider divider-hack"></li>
+                <li class="nav-header">LANDMARK STATS URL</li>
+                <li>
+                  <form class="navbar-form pull-left url-box">
+                    <input id="landmark-stats-url" type="text" placeholder="http://example.com:8080" value="<%= current_user ? current_user.setting.landmark_stats_url : nil %>">
+                  </form>
+                </li>
+                <li class="span12">
+                  <%= button_tag "save", :class => 'btn btn-primary btn-mini dropdown-save', :onclick => "$.ajax({
+                                                                  url: '#{landmark_stats_url_path}',
+                                                                  type: 'PUT',
+                                                                  data: {'landmark_stats_url': $('#landmark-stats-url').val()}});" %>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          </li>
+          </ul>
+          <ul class="nav span2">
+            <% if user_signed_in? %>
+              <li class="sign-out"><%= link_to "Sign out #{current_user.email}", destroy_user_session_path, :method => :delete %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

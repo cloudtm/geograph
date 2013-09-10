@@ -1,0 +1,28 @@
+#!/bin/bash
+BENCH_SNAPSHOT=`cat ./automate/benchmark_snapshot`
+DO=echo
+
+for i in `seq 1 2`; do
+    $DO ./spawn-single-vm.sh $BENCH_SNAPSHOT farm-$i xxlarge
+done
+
+for i in `seq 1 20`; do
+    $DO ./spawn/spawn-single-vm.sh $BENCH_SNAPSHOT geo-$i xxlarge
+done
+$DO ./spawn/wait-for-spawning.sh
+for placement in auto random; do
+    $DO ./automate/send-configurations.sh ./automate/configs/005-placement_$placement
+    $DO ./curbench/curbench-define.sh WRITE-20x1K-POSTS READ_ONLY NOOP-TAIL
+    $DO ./curbench/curbench-start.sh autonomic-data-placement.$placement.10b-3f
+done
+
+. ~/.openrc.sh
+for i in `seq 1 20`; do
+    $DO nova delete geo-$i
+    $DO sleep 10s 
+done
+
+for i in 1 2 3; do
+    $DO nova delete farm-$i
+    $DO sleep 10s 
+done

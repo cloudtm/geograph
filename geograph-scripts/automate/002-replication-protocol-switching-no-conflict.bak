@@ -1,0 +1,37 @@
+#!/bin/bash
+BENCH_SNAPSHOT=`cat ./automate/benchmark_snapshot`
+#DO=echo
+DO=
+
+#for i in `seq 1 5`; do
+#    $DO ./spawn/spawn-rr-single-vm.sh $BENCH_SNAPSHOT geo-$i geo-big
+#done
+
+#$DO ./spawn/wait-for-spawning.sh
+#$DO ./update-fenix.sh
+#$DO ./update-infinispan.sh
+#$DO ./git-pull-all.sh
+#$DO ./d_update-wpm.sh
+for protocol in 2pc to pr; do
+    $DO ./automate/send-configurations.sh ./automate/configs/002-$protocol
+    for workload in 10r90u 50r50u 90r10u; do
+        $DO ./restart-gateway-services.sh 
+        case $workload in
+        10r90u) $DO ./curbench/curbench-define.sh PROTOCOL-SWITCHING-10R-90U-0TT-20A PROTOCOL-SWITCHING-10R-90U-0TT-80A PROTOCOL-SWITCHING-10R-90U-0TT-160A NOOP-TAIL ;;
+        50r50u) $DO ./curbench/curbench-define.sh PROTOCOL-SWITCHING-50R-50U-0TT-20A PROTOCOL-SWITCHING-50R-50U-0TT-80A PROTOCOL-SWITCHING-50R-50U-0TT-160A NOOP-TAIL ;;
+        90r10u) $DO ./curbench/curbench-define.sh PROTOCOL-SWITCHING-90R-10U-0TT-20A PROTOCOL-SWITCHING-90R-10U-0TT-80A PROTOCOL-SWITCHING-90R-10U-0TT-160A NOOP-TAIL ;;
+        esac
+        $DO ./curbench/curbench-start.sh repl-prot-switch-bis.$protocol.$workload.5b-8f
+    done
+done
+
+#. ~/.openrc.sh
+#for i in `seq 1 10`; do
+#    $DO nova delete geo-$i
+#    $DO sleep 10s 
+#done
+
+#for i in 1 2 3; do
+#    $DO nova delete farm-$i
+#    $DO sleep 10s 
+#done

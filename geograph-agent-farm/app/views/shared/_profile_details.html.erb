@@ -1,0 +1,114 @@
+<% if (current_user.current_profile) %>
+  <h4> NAME: <%= current_user.current_profile.name.upcase %>
+     <%= link_to "add", '#static-profile-modal', 
+                :class => 'add-static-profile-button btn btn-mini btn-success', 
+                :type => "button", 
+                :data => {:toggle => 'modal'} -%>
+     <%= button_tag "delete", :class => 'btn btn-mini btn-danger', :type => "button", :id => 'delete-benchmark' %>
+   </h4>
+
+  <%= render :partial => 'shared/profile_list', 
+             :locals => { :static_profiles => current_user.current_profile.static_profiles, :accordion_id => 'console-accordion' } %>
+<% end %>
+
+<script>
+  $(document).ready(function() {
+    $('#console-accordion').sortable({
+      stop: function() {
+        var sortedProfiles = [];
+        $('#console-accordion').find('.accordion-group').each(function(index, elem) {
+          sortedProfiles.push($(elem).data('profile'));
+        });
+
+        $.ajax({
+          url: 'static_profiles/sort',
+          type: 'put',
+          data: {ids: sortedProfiles}
+        })
+      }
+    });
+
+    $('#delete-benchmark').on('click', function() {
+      if(confirm("Are you sure you want delete benchmarck")) {
+        $.ajax({
+          url: 'delete_profile',
+          type: 'PUT'
+        }).done(function(details) {
+           $('#current_profile_details').html(details);
+        });
+      }
+    });
+
+    $('.icon-trash').on('click', function(event) {
+      event.stopPropagation();
+      var icon = $(this);
+      if(confirm("Are you sure you want delete profile " + icon.data('profile') +' ?')) {
+        $.ajax({
+          url: 'static_profiles/' + icon.data('profile'),
+          type: 'delete'
+        }).done(function(details) {
+          $('#current_profile_details').html(details);
+        });
+      } 
+    });
+
+    $('.icon-edit').on('click', function(event) {
+      event.stopPropagation();
+      var icon = $(this);
+      var profileId = icon.data('profile');
+      var duration = icon.data('duration');
+
+      $.ajax({
+        url: 'static_profiles/' + profileId + '/edit_groups',
+        async: false
+      }).done(function(groups) {
+        $('#static-profile-groups').html(groups);
+      });
+
+      $('#static_profile_duration').val(duration);
+      $('#id').val(profileId);
+      var action = $('#update-static-profile-form').attr('action');
+      $('#update-static-profile-form').attr('action', action.replace(/\/\d+/, '/' + profileId));
+      $('#update-static-profile-modal').modal('show');
+    });
+
+    $('#static-profile-form').on('ajax:complete', function(event, data) {
+      $('#static-profile-modal').modal('hide');
+      $('#current_profile_details').html(data.responseText);
+    }).on('submit', function() {
+      if(parseInt($(this).find('#duration').val())) {
+        return true;
+      } else {
+        var alertDom = $('#form-alert').clone();
+        $('#static-profile-form').parent().find('.static-profile-form-alert').remove();
+        $('#static-profile-form').prepend(alertDom);
+        var formAlert = $('#static-profile-form').parent().find('.static-profile-form-alert');
+        formAlert.removeClass('hidden');
+        formAlert.show();
+        return false;
+      }
+    });
+
+    $('#update-static-profile-form').on('ajax:complete', function(event, data) {
+      $('#update-static-profile-modal').modal('hide');
+      $('#current_profile_details').html(data.responseText);
+    }).on('submit', function() {
+      if(parseInt($(this).find('#static_profile_duration').val())) {
+        return true;
+      } else {
+        var alertDom = $('#form-alert').clone();
+        $('#update-static-profile-form').parent().find('.static-profile-form-alert').remove();
+        $('#update-profile-form').prepend(alertDom);
+        var formAlert = $('#static-profile-form').parent().find('.static-profile-form-alert');
+        formAlert.removeClass('hidden');
+        formAlert.show();
+        return false;
+      }
+      
+    });
+  });
+</script>
+
+
+
+

@@ -1,0 +1,28 @@
+development:
+  adapter: jdbcmysql
+  database: geograph_development
+  reconnect: false
+  pool: 20
+  xa: false
+  username: root
+  password: geograph
+
+test:
+  adapter: jdbcmysql
+  database: geograph_test
+  reconnect: false
+  pool: 20
+  username: root
+  password: geograph
+
+
+production:
+  adapter: mysql
+  xa: false
+  database: geograph_production
+  host: $LOCAL_IP
+  username: geograph
+  password: $DATABASE_PASSWORD
+  encoding: utf8
+
+

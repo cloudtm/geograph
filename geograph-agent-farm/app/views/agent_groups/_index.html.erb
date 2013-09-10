@@ -1,0 +1,80 @@
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>simulator</th>
+    <th>threads</th>
+    <th>think time (msec)</th>
+    <th>track type</th>
+    <th>track value</th>
+    <th>status</th>
+    <th>actions</th>
+
+  </tr>
+  </thead>
+  <tbody>
+  <% (@agent_groups || []).each do |agent_group| %>
+    <tr>
+      <td>
+        <% unless agent_group.started? %>
+          <%= link_to agent_group.agents_type, 'javascript:void(0);', :onclick => "editGroup(#{agent_group.to_json});" %>
+        <% else %>
+          <%= agent_group.agents_type %>
+        <% end %>
+      </td>
+      <td><%= agent_group.agents.size %></td>
+      <td><%= agent_group.delay %></td>
+      <td><%= agent_group.track_filter_type %></td>
+      <td><%= agent_group.track_filter_value %></td>
+      <td class="status-<%= agent_group.status %>"><%= agent_group.status %></td>
+      <td>
+        <%= render 'agent_groups/choose', :agent_group => agent_group %>
+      </td>
+      <!--
+      <td>
+        <%#= agent_group.agents.select { |agent| agent.status == "running" }.size %>
+      </td>
+      <td>
+        <%#= agent_group.agents.select { |agent| agent.status == "stopped" }.size %>
+      </td>
+      <td>
+        <%#= agent_group.agents.select { |agent| agent.status == "paused" }.size %>
+      </td>
+      <td>
+        <%#= agent_group.agents.select { |agent| agent.status == "zombie" }.size %>
+      </td>
+      <td>
+        <%#= agent_group.agents.select { |agent| agent.status == "dead" }.size %>
+      </td>
+    </tr>
+-->
+    <div id="edit-group-<%= agent_group.id %>" style="display: none;">
+      <%= form_for(:agent_group, :url => agent_group_path(agent_group.id), :remote => true, :method => :put, :html => {:id => "edit-agent-group-#{agent_group.id}"}) do |f| %>
+        <label for="name">name</label>
+        <%= text_field_tag "agent_group[name]", agent_group.name, :class => "text ui-widget-content ui-corner-all" %>
+        <br/>
+        
+        <label for="type">agents type</label>
+        <% agent_type = agent_group.agents_type.blank? ? AGENT_TYPES.first.sub(/Agent$/, '').downcase : agent_group.agents_type.sub(/Agent$/, '').downcase %>
+        <% logger.debug "@@@@@@@@@@@@@@@@@@@@@@@@@@@ 555555555555 @@@@@@@@@@@@@@@@@@@@@@@@@@@" %>
+        <% logger.debug "@@@@@@@@@@@@@@@@@@@@@@@@@@@ #{agent_type} @@@@@@@@@@@@@@@@@@@@@@@@@@@" %>
+        <%= text_field_tag "agent_group[agents_type]", agent_type, :readonly => true, :class => "ui-text-readonly" %>
+        <br/>
+
+        <label for="name">agents <span id="agents-selected-<%= agent_group.id %>"><%= agent_group.agents_count %></span></label>
+        <%= hidden_field_tag "agent_group[agents]", agent_group.agents_count %>
+        <div class="agents-slider slider" rel="<%= agent_group.id %>"></div>
+        <br/>
+
+        <label for="name">think time <span id="delay-selected-<%= agent_group.id %>"><%= agent_group.delay %></span>
+          (ms)</label>
+        <%= hidden_field_tag "agent_group[delay]", agent_group.delay %>
+        <div class="delay-slider slider" rel="<%= agent_group.id %>"></div>
+      <% end %>
+    </div>
+
+  <% end %>
+  </tbody>
+</table>
+
+
+

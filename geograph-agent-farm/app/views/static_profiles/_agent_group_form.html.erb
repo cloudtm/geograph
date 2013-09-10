@@ -1,0 +1,65 @@
+<div id="group-for-<%= agent_group.id %>" class="well row" style="margin-left: 0;">
+	<button type="button" class="btn btn-danger delete-agent-group-button" data-group="<%= agent_group.id %>">delete</button>
+
+	<h6> Agent Group (<%= agent_group.id %>) </h6>
+	<label for="simulator" class="span3">Simulator</label>
+	<div class="input-append">
+	  <%= select_tag 'agent_group[simulator]', options_for_select(['MovableAgent', 'ReaderAgent', 'BloggerAgent', 'Blogger1kAgent', 'Blogger10kAgent', 
+                   'TesterAgent', 'PositionTrackerAgent', 'PathTrackerAgent', 'MicroGeoBloggerAgent', 'GeoBlogReaderAgent', 'VenueOwnerAgent', 
+                   'FoursquareUserAgent', 'VenueSeekerAgent', 'ReviewerAgent', 'NoopAgent', 
+                   'ProbReadPost90UpdatePos10Agent', 'ProbReadPost50UpdatePos50Agent', 'ProbReadPost10UpdatePos90Agent', 'ProbReadPostUpdatePosConfAgent',
+                   'ProbReadPostCreatePostConfAgent' ], agent_group.simulator) %>
+	  <button class="btn btn-success save-agent-group-simulator" type="button" data-group="<%= agent_group.id %>">Save</button>
+	</div>        	
+
+	<label for="threads" class="span3">Threads</label>
+	<div class="input-append span7" style="margin-left: 0;">
+		<%= number_field_tag 'agent_group[threads]', agent_group.threads, :in => 1...100000 %>
+		<button class="btn btn-success save-agent-group-threads" type="button" data-group="<%= agent_group.id %>">Save</button>
+	</div>
+
+	<label for="sleep" class="span3">Think time</label>
+	<div class="input-append span7"  style="margin-left: 0;">				
+		<%= number_field_tag 'agent_group[sleep]', agent_group.sleep, :in => 0...100000 %>
+		<button class="btn btn-success save-agent-group-sleep" type="button" data-group="<%= agent_group.id %>">Save</button>
+	</div>
+
+	<label for="track_filter_type" class="span3">Track filter type</label>
+	<div class="input-append span7"  style="margin-left: 0;">				
+		<%= select_tag 'agent_group[track_filter_type]', options_for_select([['', ''], ['city (country)', 'citycountry'], ['country', 'country'], ['continent', 'continent']]) %>
+		<%# text_field_tag 'agent_group[track_filter_type]', agent_group.track_filter_type %>
+		<button class="btn btn-success save-agent-group-sleep" type="button" data-group="<%= agent_group.id %>">Save</button>
+	</div>
+
+	<label for="track_filter_value" class="span3">Track filter value</label>
+	<div class="input-append span7"  style="margin-left: 0;">				
+		<%= text_field_tag 'agent_group[track_filter_value]', agent_group.track_filter_value %>
+		<button class="btn btn-success save-agent-group-sleep" type="button" data-group="<%= agent_group.id %>">Save</button>
+	</div>
+
+<script type="text/javascript">
+  $(function() {
+    $("#agent_group_track_filter_value").autocomplete({
+      source: function(request, response) {
+        $.ajax({
+          url: '/farm/autocompl',
+          dataType: 'json',
+          data: {
+            term: request.term,
+            type: $('#agent_group_track_filter_type').val()
+          },
+          success: function(data) {
+            response(data);
+          }
+        });
+      },
+      minLength: 2
+    });
+  });
+</script>
+
+  <div class="span10">
+    <button class="btn btn-primary" type="button" data-group="<%= agent_group.id %>" id="btn-save-agent-group-all">Save all</button>
+  </div>
+
+</div>

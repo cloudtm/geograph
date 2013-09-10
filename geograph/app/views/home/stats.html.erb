@@ -1,0 +1,15 @@
+<div id="stats-div">PLEASE WAIT FOR DATA...</div>
+
+
+<script type="text/javascript">
+
+$(function() {
+  setTimeout('refreshStatsDiv()', 5000);
+});
+
+function refreshStatsDiv() {
+  $('#stats-div').load('<%= url_for :action => :stats_ajax, :controller => :home %>');
+  setTimeout('refreshStatsDiv()', 5000);
+}
+
+</script>

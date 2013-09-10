@@ -1,0 +1,55 @@
+#!/bin/bash
+BENCH_SNAPSHOT=`cat ./automate/benchmark_snapshot`
+#DO=echo
+DO=
+
+#for i in `seq 1 5`; do
+#    $DO ./spawn/spawn-rr-single-vm.sh $BENCH_SNAPSHOT geo-$i geo-big
+#done
+
+$DO ./spawn/wait-for-spawning.sh
+echo ./update-fenix.sh
+$DO ./update-fenix-parallel.sh
+echo --
+$DO ./update-infinispan.sh
+echo ./git-pull-all.sh
+$DO ./git-pull-all-parallel.sh
+echo --
+echo update wpm
+$DO ./update-wpm.sh
+for radius in 2000 1000 500  ; do
+    for protocol in 2pc to ; do
+        $DO ./restart-gateway-services.sh 
+        echo Updating configs
+        echo ---
+        cd automate/configs
+        ./update-configs-from-templates-radius.sh $protocol $radius
+        cd ../..
+        echo Sending Configs and Nuno version with backoff
+        echo --
+        $DO bash ./automate/send-configurations-parallel.sh ./automate/configs/002-$protocol  
+        echo --
+       case $workload in
+        #10r90u) $DO ./curbench/curbench-define.sh PROTOCOL-SWITCHING-10R-90U-0TT-20A PROTOCOL-SWITCHING-10R-90U-0TT-80A PROTOCOL-SWITCHING-10R-90U-0TT-160A NOOP-TAIL ;;
+        #50r50u) $DO ./curbench/curbench-define.sh PROTOCOL-SWITCHING-50R-50U-0TT-20A PROTOCOL-SWITCHING-50R-50U-0TT-80A PROTOCOL-SWITCHING-50R-50U-0TT-160A NOOP-TAIL ;;
+        #90r10u) $DO ./curbench/curbench-define.sh PROTOCOL-SWITCHING-90R-10U-0TT-20A PROTOCOL-SWITCHING-90R-10U-0TT-80A PROTOCOL-SWITCHING-90R-10U-0TT-160A NOOP-TAIL ;;
+        #10r90u) $DO ./curbench/curbench-define.sh SCALABILITY-10R-90U-2TT-32B SCALABILITY-10R-90U-0TT-32B NOOP-TAIL ;;
+        10r90u) $DO ./curbench/curbench-define.sh SCALABILITY-10R-90U-0TT-64B ROME-10 NOOP-TAIL ;;
+        esac
+        $DO ./curbench/curbench-define.sh SCALABILITY-10R-90U-2TT-64B SCALABILITY-10R-90U-0TT-64B ROME-10  NOOP-TAIL 
+       ## $DO ./curbench/curbench-define.sh SCALABILITY-10R-90U-0TT-64B ROME-CONC NOOP-TAIL 
+       # $DO ./curbench/curbench-start.sh repl-prot-switch-bis-no-population.$protocol.swith-2PC.$workload.ROME-10.noLognoWarn.5b-14f.24LARD.1Krad.rome-10-400-noTopK
+        $DO ./curbench/curbench-start.sh repl-prot-switch-SCALABILITY-10R-90U-0TT-64B-ROME.5b-14f.20LARD.noTopK.${protocol}.${radius}
+  done
+done
+
+#. ~/.openrc.sh
+#for i in `seq 1 10`; do
+#    $DO nova delete geo-$i
+#    $DO sleep 10s 
+#done
+
+#for i in 1 2 3; do
+#    $DO nova delete farm-$i
+#    $DO sleep 10s 
+#done

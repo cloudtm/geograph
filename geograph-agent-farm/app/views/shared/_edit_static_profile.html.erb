@@ -1,0 +1,119 @@
+<!-- Modal -->
+<div id="update-static-profile-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="updateStaticProfile" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="updateStaticProfile">Modify Static Profile</h3>
+  </div>
+
+  <%= form_tag 'static_profiles/1', :id => 'update-static-profile-form', :method => 'put', :remote => true do %>
+    <fieldset>
+      <div class="modal-body">  
+          <%= label_tag(:duration, 'Duration') %>
+          <%= text_field_tag "static_profile[duration]", '', :placeholder => 'in minutes' %>
+          <%= hidden_field_tag "id", '' %>
+      </div>
+
+      <div id="static-profile-groups" class="modal-body">
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <%= submit_tag 'Save', :class => 'btn btn-primary' %>
+      </div>
+    </fieldset>
+  <% end %> 
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('#update-static-profile-modal').on('click', '#add-group-button', function() {
+      $.ajax({
+        url: 'static_profiles/' + $(this).data('profile') + '/new_group'
+      }).done(function(data) {
+        $('.group-container').append(data);
+      });
+    });
+
+    $('#update-static-profile-modal').on('click', '.delete-agent-group-button', function() {
+      var groupId = $(this).data('group');
+      $.ajax({
+        url: 'static_profiles/' + groupId + '/destroy_group',
+        type: 'delete'
+      }).done(function(data) {
+        $('#current_profile_details').html(data);
+        $('#group-for-' + groupId).remove();
+      });
+    });
+
+    $('#update-static-profile-modal').on('click', '.save-agent-group-simulator', function() {
+      var groupId = $(this).data('group');
+      var simulator = $(this).parent().find('#agent_group_simulator').val();
+      $.ajax({
+        url: 'static_profiles/' +  groupId + '/update_groups',
+        data: {attribute: 'simulator', value: simulator},
+        type: 'put'
+      }).done(function(data) {
+        $('#current_profile_details').html(data);
+        addAlertSuccess(groupId);
+      });
+    });
+
+    $('#update-static-profile-modal').on('click', '.save-agent-group-threads', function() {
+      var groupId = $(this).data('group');
+      var threads = $(this).parent().find('#agent_group_threads').val();
+      $.ajax({
+        url: 'static_profiles/' +  groupId + '/update_groups',
+        data: {attribute: 'threads', value: threads},
+        type: 'put'
+      }).done(function(data) {
+        $('#current_profile_details').html(data);
+        addAlertSuccess(groupId);
+      });
+    });
+
+    $('#update-static-profile-modal').on('click', '.save-agent-group-sleep', function() {
+      var groupId = $(this).data('group');
+      var sleep = $(this).parent().find('#agent_group_sleep').val();
+      $.ajax({
+        url: 'static_profiles/' +  groupId + '/update_groups',
+        data: {attribute: 'sleep', value: sleep},
+        type: 'put'
+      }).done(function(data) {
+        $('#current_profile_details').html(data);
+        addAlertSuccess(groupId);
+      });
+    });
+
+    $('#update-static-profile-modal').on('click', '#btn-save-agent-group-all', function() {
+      var groupId = $(this).data('group');
+      $.ajax({
+        url: 'static_profiles/' + groupId + '/update_groups',
+        data: { 
+            attributes: { 
+                simulator: $('#agent_group_simulator').val(),
+                threads: $('#agent_group_threads').val(),
+                sleep: $('#agent_group_sleep').val(),
+                track_filter_type: $('#agent_group_track_filter_type').val(),
+                track_filter_value: $('#agent_group_track_filter_value').val()
+            }
+        },
+        type: 'put'
+      }).done(function(data) {
+        $('#current_profile_details').html(data);
+        addAlertSuccess(groupId);
+      });
+    });
+
+  });
+
+  function addAlertSuccess(groupId) {
+    var alertDom = $('#form-success').clone();
+    var container = $('#group-for-' + groupId);
+    container.find('.static-profile-form-success').remove();
+    container.prepend(alertDom);
+    var formAlert = container.find('.static-profile-form-success');
+    formAlert.removeClass('hidden');
+    formAlert.show();
+  }
+  
+</script>

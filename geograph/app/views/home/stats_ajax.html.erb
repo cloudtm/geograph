@@ -1,0 +1,30 @@
+<table class="table table-hover table-condensed table-bordered">
+<thead>
+<tr>
+  <th>Landmark</th>
+  <th>Posts</th>
+  <th>Post likes</th>
+  <th>Post comments</th>
+  <th>Venues</th>
+  <th>Venue likes</th>
+  <th>Venue comments</th>
+  <th>Agents at venues</th>
+  <th>Trackables</th>
+</tr>
+</thead>
+<tbody>
+<% @stats.each do |stat| %>
+  <tr>
+    <td><%= stat[:landmark] %></td>
+    <td><%= stat[:posts] %></td>
+    <td><%= stat[:postLikes] %></td>
+    <td><%= stat[:postComments] %></td>
+    <td><%= stat[:venues] %></td>
+    <td><%= stat[:venueLikes] %></td>
+    <td><%= stat[:venueComments] %></td>
+    <td><%= stat[:agentsInVenues] %></td>
+    <td><%= stat[:trackables] %></td>
+  </tr>
+<% end %>
+</tbody>
+</table>
